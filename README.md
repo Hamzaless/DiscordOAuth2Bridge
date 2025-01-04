@@ -12,8 +12,8 @@ OAuth2Bridge is a simple and powerful C# library that simplifies OAuth2 authenti
 
 ## Example
 
-<img src="https://github.com/Hamzaless/OAuth2Bridge/blob/master/oauth3.png?raw=true" width="200" />
-<img src="https://github.com/Hamzaless/OAuth2Bridge/blob/master/oauth4.png?raw=true" width="200" />
+<img src="https://github.com/Hamzaless/OAuth2Bridge/blob/master/oauth3.png?raw=true" width="600" />
+<img src="https://github.com/Hamzaless/OAuth2Bridge/blob/master/oauth4.png?raw=true" width="600" />
 
 
 ## Installation
