@@ -10,6 +10,12 @@ OAuth2Bridge is a simple and powerful C# library that simplifies OAuth2 authenti
 - **User Info Retrieval**: Retrieve user information after authentication, including their username, email, avatar, and more.
 - **Easy Integration**: Simple API designed for ease of use with minimal configuration.
 
+## Example
+
+<img src="https://github.com/Hamzaless/OAuth2Bridge/blob/master/oauth3.png?raw=true" width="200" />
+<img src="https://github.com/Hamzaless/OAuth2Bridge/blob/master/oauth4.png?raw=true" width="200" />
+
+
 ## Installation
 
 To get started, you can install the OAuth2Bridge library via NuGet:
