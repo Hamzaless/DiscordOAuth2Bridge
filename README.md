@@ -1,5 +1,7 @@
 # OAuth2Bridge - Discord OAuth2 Authentication
 
+[NUGET PACKAGE](https://www.nuget.org/packages/OAuth2Bridge/) 
+
 OAuth2Bridge is a simple and powerful C# library that simplifies OAuth2 authentication with Discord. This library handles user authentication via Discord’s OAuth2 flow, making it easy to authenticate users and retrieve their data.
 
 ## Features
