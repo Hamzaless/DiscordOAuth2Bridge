@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Net;
 using System.Text;
 using Newtonsoft.Json;
@@ -7,16 +8,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Http;
 
 namespace OAuth2Bridge
 {
-    
-
-    
-
-    /// <summary>
-    /// OAuth server class to handle Discord OAuth2 authentication.
-    /// </summary>
     public class OAuthServer
     {
         private readonly string _clientId;
@@ -27,7 +22,6 @@ namespace OAuth2Bridge
         private HttpListener _listener;
         private string _appName;
 
-        // Scopes are the permissions requested from Discord OAuth2
         public List<DiscordScopes> Scopes { get; set; } = new();
 
         public OAuthServer(string clientId, string clientSecret, int port, OAuthLogger logger, string appName = "OAuth2Bridge")
@@ -36,23 +30,17 @@ namespace OAuth2Bridge
             _clientId = clientId;
             _clientSecret = clientSecret;
             _port = port;
-            _redirectUri = $"http://localhost:{port}/callback"; // Localhost callback URI
+            _redirectUri = $"http://localhost:{port}/callback"; 
             _logger = logger;
         }
 
-        // Static factory method for easy server creation
         public static OAuthServer CreateServer(string clientId, string clientSecret, int port = 5000, OAuthLogger logger = null, string appName = "OAuth2Bridge")
         {
             return new OAuthServer(clientId, clientSecret, port, logger ?? new OAuthLogger(new LoggerFactory().CreateLogger<OAuthLogger>()), appName);
         }
 
-        // Helper method to generate the HTML content from file or template
-        
-
-        // The AuthenticateAsync method handles OAuth authentication
-        public async Task<UserInfo> AuthenticateAsync(CancellationToken cancellationToken, int timeoutSeconds = 30, string htmlCallbackPath = "./data/success.html")
+        public async Task<UserInfo> AuthenticateAsync(CancellationToken cancellationToken, string htmlCallbackPath = "./data/success.html")
         {
-            // Construct the authentication URL
             string scopeParam = Uri.EscapeDataString(string.Join(" ", Scopes.Select(scope => scope.ToString().ToLower().Replace("ı", "i"))));
             string authUrl = $"https://discord.com/api/oauth2/authorize?client_id={_clientId}&redirect_uri={Uri.EscapeDataString(_redirectUri)}&response_type=code&scope={scopeParam}";
 
@@ -62,26 +50,11 @@ namespace OAuth2Bridge
             _listener = new HttpListener();
             _listener.Prefixes.Add(_redirectUri + "/");
             _listener.Start();
-
             _logger.LogInformation("Listening for authentication callback...");
-
-            var cts = new CancellationTokenSource(timeoutSeconds * 1000);
-            var combinedToken = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, cts.Token).Token;
-
-            HttpListenerContext context = null;
 
             try
             {
-                // Wait for either a timeout or a successful authentication callback
-                var completedTask = await Task.WhenAny(_listener.GetContextAsync(), Task.Delay(timeoutSeconds * 1000, combinedToken));
-
-                if (completedTask == Task.Delay(timeoutSeconds * 1000, combinedToken)) // Timeout occurred
-                {
-                    throw new OAuthException("Authentication timeout exceeded.");
-                }
-
-                // The authentication task completed successfully
-                context = await _listener.GetContextAsync();
+                var context = await _listener.GetContextAsync();
 
                 var request = context.Request;
                 var response = context.Response;
@@ -92,16 +65,14 @@ namespace OAuth2Bridge
                     throw new OAuthException("Authorization failed. No code received.");
                 }
 
-                // Exchange the authorization code for an access token
                 string accessToken = await GetAccessTokenAsync(code);
                 var userInfo = await GetUserInfoAsync(accessToken);
 
-                // Generate success page HTML
-                string htmlContent = Helper.GenerateHtmlFromFile(_logger , htmlCallbackPath, "@" + userInfo.Username, Helper.GetUserAvatar(userInfo), userInfo.Email, _appName);
+                string htmlContent = Helper.GenerateHtmlFromFile(_logger, htmlCallbackPath, userInfo.Username, Helper.GetUserAvatar(userInfo), userInfo.Email, _appName);
                 byte[] buffer = Encoding.UTF8.GetBytes(htmlContent);
                 response.ContentLength64 = buffer.Length;
 
-                await response.OutputStream.WriteAsync(buffer, 0, buffer.Length, combinedToken);
+                await response.OutputStream.WriteAsync(buffer, 0, buffer.Length, cancellationToken);
                 response.OutputStream.Close();
 
                 _listener.Stop();
@@ -109,18 +80,17 @@ namespace OAuth2Bridge
 
                 return userInfo;
             }
-            catch (OperationCanceledException)
+            catch (Exception ex)
             {
-                _logger.LogError("Authentication timeout exceeded or operation canceled.");
-                throw new OAuthException("Authentication failed: Timeout or canceled.");
+                _logger.LogError($"Authentication failed: {ex.Message}");
+                throw new OAuthException($"Authentication failed: {ex.Message}");
             }
             finally
             {
-                _listener?.Stop(); // Ensure the listener is stopped after completion
+                _listener?.Stop(); 
             }
         }
 
-        // Helper method to get access token from Discord
         private async Task<string> GetAccessTokenAsync(string code)
         {
             using var client = new HttpClient();
@@ -147,7 +117,6 @@ namespace OAuth2Bridge
             return json.access_token;
         }
 
-        // Helper method to get user information using access token
         private async Task<UserInfo> GetUserInfoAsync(string accessToken)
         {
             using var client = new HttpClient();
@@ -158,9 +127,6 @@ namespace OAuth2Bridge
             return JsonConvert.DeserializeObject<UserInfo>(response);
         }
 
-
-
-        // Open the provided URL in the default browser
         private void OpenUrl(string url)
         {
             try
@@ -178,5 +144,4 @@ namespace OAuth2Bridge
             }
         }
     }
-
 }

@@ -4,7 +4,31 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>Discord OAuth2 Bridge</Title>
+    <Authors>MrHamzaless, AxionLab</Authors>
+    <Description>An Discord OAuth2 Bridge for C#</Description>
+    <PackageProjectUrl>https://github.com/Hamzaless/DiscordOAuth2Bridge</PackageProjectUrl>
+    <PackageIcon>axion.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/Hamzaless/DiscordOAuth2Bridge</RepositoryUrl>
+    <PackageTags>Discord, OAuth2, Auth, Discord OAuth2</PackageTags>
+    <PackAsTool>False</PackAsTool>
+    <PackageOutputPath>bin\Nuget</PackageOutputPath>
+    <IncludeSymbols>True</IncludeSymbols>
+    <SymbolPackageFormat>symbols.nupkg</SymbolPackageFormat>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\Users\hamza\Downloads\axion.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\..\Users\hamza\Downloads\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.0" />

@@ -8,7 +8,6 @@ namespace OAuth2Bridge
 {
     public static class Helper
     {
-        // Generate URL for user avatar
         public static string GetUserAvatar(UserInfo userInfo)
         {
             return $"https://cdn.discordapp.com/avatars/{userInfo.Id}/{userInfo.Avatar}";
@@ -17,7 +16,7 @@ namespace OAuth2Bridge
         {
             string htmlContent;
 
-            if (string.IsNullOrEmpty(filePath)) // Use default HTML if no file provided
+            if (string.IsNullOrEmpty(filePath))
             {
                 htmlContent = @"
                     <html>
@@ -34,7 +33,7 @@ namespace OAuth2Bridge
             {
                 try
                 {
-                    htmlContent = File.ReadAllText(filePath); // Read custom HTML file
+                    htmlContent = File.ReadAllText(filePath); 
                 }
                 catch (Exception ex)
                 {
@@ -43,7 +42,6 @@ namespace OAuth2Bridge
                 }
             }
 
-            // Replace placeholders with actual data
             htmlContent = htmlContent
                 .Replace("%app_name%", appName)
                 .Replace("%profile_name%", profileName)
