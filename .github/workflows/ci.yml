@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+      - name: Restore
+        run: dotnet restore OAuth2Bridge.sln
+      - name: Build Release
+        run: dotnet build OAuth2Bridge.sln -c Release --no-restore
+      - name: Test
+        run: dotnet test OAuth2Bridge.Tests/OAuth2Bridge.Tests.csproj -c Release --no-build --verbosity normal
+      - name: Pack
+        run: dotnet pack OAuth2Bridge.csproj -c Release --no-build -o ./artifacts
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget
+          path: ./artifacts/*.nupkg

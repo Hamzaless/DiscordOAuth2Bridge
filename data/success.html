@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Authorization Successful</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-gray-900 flex items-center justify-center min-h-screen text-white">
+  <div class="w-[400px] h-[500px] bg-gray-800 rounded-lg shadow-lg p-6 flex flex-col items-center justify-between">
+    <h1 class="text-xl font-bold uppercase tracking-wide mb-4">%app_name%</h1>
+
+    <div class="text-center">
+      <h2 class="text-2xl font-semibold mb-4">Authorization successful!</h2>
+      <p class="mb-8 text-gray-300">You can close this window.</p>
+    </div>
+
+    <div class="flex items-center space-x-4">
+      <div class="w-16 h-16 bg-gray-700 rounded-full flex items-center justify-center">
+        <img src="%profile_url%" alt="Profile Picture" class="w-full h-full rounded-full object-cover">
+      </div>
+      <div>
+        <h3 class="text-lg font-semibold">%profile_name%</h3>
+        <p class="text-gray-400 text-sm">%profile_email%</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
