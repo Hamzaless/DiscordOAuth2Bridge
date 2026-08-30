@@ -14,6 +14,7 @@ jobs:
     permissions:
       contents: read
       packages: write
+      id-token: write
     steps:
       - uses: actions/checkout@v4
       - name: Setup .NET
@@ -30,9 +31,8 @@ jobs:
         run: dotnet test OAuth2Bridge.Tests/OAuth2Bridge.Tests.csproj -c Release --no-build
       - name: Pack
         run: dotnet pack OAuth2Bridge.csproj -c Release --no-build -o ./artifacts
-      - name: Push to NuGet.org
-        if: ${{ secrets.NUGET_API_KEY != '' }}
-        run: dotnet nuget push ./artifacts/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+      - name: Push to NuGet.org (Trusted Publishing)
+        run: dotnet nuget push ./artifacts/*.nupkg --source https://api.nuget.org/v3/index.json --skip-duplicate
       - name: Push to GitHub Packages
         run: |
           dotnet nuget push ./artifacts/*.nupkg --api-key ${{ secrets.GITHUB_TOKEN }} --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json --skip-duplicate || echo "GitHub Packages push skipped"
