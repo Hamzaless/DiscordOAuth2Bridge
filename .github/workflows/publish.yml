@@ -31,7 +31,7 @@ jobs:
       - name: Pack
         run: dotnet pack OAuth2Bridge.csproj -c Release --no-build -o ./artifacts
       - name: Push to NuGet.org
-        if: secrets.NUGET_API_KEY != ''
+        if: ${{ secrets.NUGET_API_KEY != '' }}
         run: dotnet nuget push ./artifacts/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
       - name: Push to GitHub Packages
         run: |
